@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merchant AI</title>
+<style>
+  :root{
+    --navy:#002E6E; --cyan:#00BAF2; --bg:#F5F9FF; --card:#FFFFFF; --ink:#0B1F3A; --muted:#6B7C93; --line:#D9E4F2;
+    --bubble-ai:#EAF6FD;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#000B1A; --card:#0A1A30; --ink:#EAF2FF; --muted:#8CA0BC; --line:#16304F; --bubble-ai:#0F2542; }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column}
+  header{display:flex;align-items:center;gap:10px;padding:14px 20px}
+  .logo{font-weight:800;font-size:20px;letter-spacing:-.3px}
+  .logo b{color:var(--cyan)}
+  .tag{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 10px}
+  main{flex:1;display:flex;flex-direction:column;align-items:center;overflow:auto;padding:0 16px}
+  #log{width:100%;max-width:760px;display:none;flex-direction:column;gap:14px;padding:8px 0 20px}
+  .started #log{display:flex}
+  .hero{margin:auto 0;width:100%;max-width:760px;text-align:center}
+  .started .hero{margin:0;padding:0 0 8px;position:sticky;bottom:0;background:var(--bg)}
+  .started h1,.started .chips{display:none}
+  .started main{justify-content:flex-start}
+  .started .hero{margin-top:auto}
+  h1{font-size:30px;font-weight:600;margin:0 0 26px}
+  .msg{max-width:85%;padding:10px 16px;border-radius:18px;white-space:pre-wrap;word-wrap:break-word}
+  .user{align-self:flex-end;background:var(--navy);color:#fff}
+  .ai{align-self:flex-start;background:var(--bubble-ai);display:flex;gap:10px;align-items:flex-start}
+  .ai button{flex:none;border:0;background:none;cursor:pointer;padding:2px;font-size:16px}
+  .composer{width:100%;display:flex;align-items:center;gap:6px;background:var(--card);
+    border:1px solid var(--line);border-radius:999px;padding:8px 8px 8px 18px;box-shadow:0 2px 14px rgba(0,46,110,.08)}
+  .composer:focus-within{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,186,242,.2)}
+  .composer input{flex:1;border:0;outline:0;background:none;color:var(--ink);font:inherit;padding:8px 4px;min-width:0}
+  .composer input::placeholder{color:var(--muted)}
+  .ib{width:40px;height:40px;border-radius:50%;border:0;background:none;color:var(--ink);cursor:pointer;display:grid;place-items:center;flex:none}
+  .ib:hover{background:rgba(0,186,242,.12)}
+  .ib.rec{background:#E5484D;color:#fff;animation:pulse 1.1s infinite}
+  @keyframes pulse{50%{opacity:.6}}
+  #send{background:var(--navy);color:#fff}
+  #send:disabled{background:var(--line);color:var(--muted);cursor:default}
+  #send:not(:disabled):hover{background:var(--cyan)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer}
+  .chip:hover{border-color:var(--cyan)}
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:10px 16px 14px}
+</style>
+</head>
+<body>
+<header><span class="logo">Merchant <b>AI</b></span><span class="tag">for Paytm</span></header>
+<main id="main">
+  <div id="log"></div>
+  <div class="hero">
+    <h1>Where should we begin?</h1>
+    <form class="composer" id="form">
+      <input id="q" autocomplete="off" placeholder="Ask Merchant AI in any Indian language" aria-label="Message">
+      <button type="button" class="ib" id="mic" title="Speak" aria-label="Speak">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+      <button type="submit" class="ib" id="send" disabled aria-label="Send">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </form>
+    <div class="chips">
+      <button class="chip">What should I make tomorrow?</button>
+      <button class="chip">When will my stall be busiest?</button>
+      <button class="chip">कल बारिश हुई तो क्या करूँ?</button>
+      <button class="chip">How do I reduce wastage?</button>
+    </div>
+  </div>
+</main>
+<footer>Merchant AI can make mistakes. Check important numbers before you act.</footer>
+
+<script>
+const $ = s => document.querySelector(s);
+const q = $('#q'), send = $('#send'), log = $('#log'), main = $('#main');
+const PLACEHOLDER = 'Ask Merchant AI in any Indian language';
+q.addEventListener('input', () => send.disabled = !q.value.trim());
+
+function add(role, text){
+  document.body.classList.add('started');
+  const el = document.createElement('div');
+  el.className = 'msg ' + role;
+  const span = document.createElement('span');
+  span.textContent = text;
+  if(role === 'ai'){
+    const b = document.createElement('button');
+    b.title = 'Listen'; b.textContent = '\u{1F50A}'; b.onclick = () => speak(span.textContent);
+    el.appendChild(b);
+  }
+  el.appendChild(span);
+  log.appendChild(el);
+  main.scrollTop = main.scrollHeight;
+  return span;
+}
+
+async function api(path, body, raw){
+  const r = await fetch(path, {method:'POST', body: raw ? body : JSON.stringify(body)});
+  const j = await r.json();
+  if(!r.ok) throw new Error(j.error || r.status);
+  return j;
+}
+
+async function ask(text){
+  add('user', text); q.value = ''; send.disabled = true;
+  const out = add('ai', '...');
+  try { out.textContent = (await api('/api/chat', {message: text})).reply; }
+  catch(e){ out.textContent = 'Sorry, something went wrong: ' + e.message; }
+  main.scrollTop = main.scrollHeight;
+}
+$('#form').addEventListener('submit', e => { e.preventDefault(); if(q.value.trim()) ask(q.value.trim()); });
+document.querySelectorAll('.chip').forEach(c => c.onclick = () => ask(c.textContent));
+
+let audio;
+async function speak(text){
+  try{
+    const j = await api('/api/tts', {text, lang: /[ऀ-ॿ]/.test(text) ? 'hi-IN' : 'en-IN'});
+    if(audio) audio.pause();
+    audio = new Audio('data:audio/wav;base64,' + j.audio); audio.play();
+  }catch(e){ alert('Voice failed: ' + e.message); }
+}
+
+// Mic: record, send to Saaras, put the transcript in the box.
+let rec, chunks = [];
+$('#mic').onclick = async () => {
+  const mic = $('#mic');
+  if(rec && rec.state === 'recording'){ rec.stop(); return; }
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    rec = new MediaRecorder(stream); chunks = [];
+    rec.ondataavailable = e => chunks.push(e.data);
+    rec.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop()); mic.classList.remove('rec'); q.placeholder = 'Transcribing...';
+      try{ const j = await api('/api/stt', new Blob(chunks), true); q.value = j.text; q.dispatchEvent(new Event('input')); q.focus(); }
+      catch(e){ alert('Could not transcribe: ' + e.message); }
+      q.placeholder = PLACEHOLDER;
+    };
+    rec.start(); mic.classList.add('rec'); q.placeholder = 'Listening... tap the mic to stop';
+  }catch(e){ alert('Microphone blocked: ' + e.message); }
+};
+</script>
+</body>
+</html>

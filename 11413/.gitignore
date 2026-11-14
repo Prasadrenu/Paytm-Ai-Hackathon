@@ -1,0 +1,13 @@
+.env
+out/
+__pycache__/
+*.pyc
+ui/node_modules/
+ui/dist/
+data/stall_details.json
+data/transactions.json
+data/daily_counts.json
+data/notifications.json
+data/notification_audio/
+data/settings.json
+data/i18n/
