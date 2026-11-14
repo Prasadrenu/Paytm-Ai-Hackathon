@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: smart-stall-api
+    runtime: python
+    rootDir: 11413
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: SARVAM_API_KEY
+        sync: false
+      - key: GNEWS_API_KEY
+        sync: false

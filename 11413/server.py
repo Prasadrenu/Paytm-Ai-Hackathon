@@ -253,5 +253,7 @@ if __name__ == "__main__":
     c.sdk()  # fail fast if the key is missing
     i18n.start_warmup()           # translate every language in the background, so choosing one is instant
     notifier.start_scheduler()   # every evening from 8 pm: make sure tomorrow's notification exists
-    print("Merchant AI running at http://localhost:8000", flush=True)
-    ThreadingHTTPServer(("127.0.0.1", 8000), H).serve_forever()
+    host = os.environ.get("HOST", "127.0.0.1")   # hosts like Render set HOST=0.0.0.0
+    port = int(os.environ.get("PORT", "8000"))
+    print(f"Merchant AI running at http://{host}:{port}", flush=True)
+    ThreadingHTTPServer((host, port), H).serve_forever()
