@@ -1,0 +1,30 @@
+# Secrets: never commit the API key (copy .env.example to .env locally)
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node / frontend build
+node_modules/
+ui/node_modules/
+ui/dist/
+
+# Generated audio and logs
+out/
+*.log
+*.tmp
+
+# Merchant's own data (stall details, payment history)
+data/stall_details.json
+data/transactions.json
+
+# Editors / OS / tools
+.vscode/
+.idea/
+.DS_Store
+.claude/
