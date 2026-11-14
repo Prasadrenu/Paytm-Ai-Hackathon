@@ -1,0 +1,10 @@
+{
+  "buildCommand": "cd ui && npm install && npm run build",
+  "outputDirectory": "ui/dist",
+  "functions": {
+    "api/[...path].py": {
+      "maxDuration": 60,
+      "includeFiles": "{smart_stall/**,data/*.csv}"
+    }
+  }
+}

@@ -17,7 +17,7 @@ from . import clients as c
 from .config import M
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CACHE = os.path.join(ROOT, "data", "i18n")
+CACHE = os.path.join(os.environ.get("DATA_DIR") or os.path.join(ROOT, "data"), "i18n")
 STRINGS = os.path.join(ROOT, "smart_stall", "ui_strings.json")   # every text in the screens, made by tools/extract_strings.cjs
 NAMES = {"hi-IN": "Hindi", "te-IN": "Telugu"}
 BATCH = 25

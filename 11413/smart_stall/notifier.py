@@ -21,7 +21,7 @@ from . import clients as c, db, settings, special, stallplan, store
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PATH = os.path.join(ROOT, "data", "notifications.json")
-AUDIO = os.path.join(ROOT, "data", "notification_audio")
+AUDIO = os.path.join(os.environ.get("DATA_DIR") or os.path.join(ROOT, "data"), "notification_audio")
 NOTIFY_HOUR = 20          # 8 pm
 KEEP_DAYS = 14
 MAX_ITEMS = 8             # items named in the message; the rest are counted

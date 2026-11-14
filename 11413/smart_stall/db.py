@@ -12,7 +12,7 @@ import sqlite3
 import threading
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA = os.path.join(ROOT, "data")
+DATA = os.environ.get("DATA_DIR") or os.path.join(ROOT, "data")   # DATA_DIR: a writable folder on hosts like Vercel
 PATH = os.path.join(DATA, "stall.db")
 _init_lock = threading.Lock()
 _ready = None   # the path the schema was made for
